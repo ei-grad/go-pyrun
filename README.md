@@ -7,7 +7,7 @@ and get result from it.
 Install
 -------
 
-You would need python-2.7 headers to build and install go-pyrun, on Ubuntu just install the python2.7-dev package:
+You would need python-2.7 headers to build and install go-pyrun. On Ubuntu just install the python2.7-dev package:
 
     apt-get install python2.7-dev
 

@@ -4,6 +4,8 @@ Go PyRun - simple interactation with Python
 It runs a Python interpreter in single dedicated thread and allows to get
 result of Python code evaluation in Golang.
 
+[![CircleCI](https://circleci.com/gh/ei-grad/go-pyrun.svg?style=svg)](https://circleci.com/gh/ei-grad/go-pyrun)
+
 Install
 -------
 

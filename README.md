@@ -13,12 +13,14 @@ Example
 -------
 
 ```go
+package main
+
 import "github.com/ei-grad/go-pyrun"
 import "fmt"
 import "log"
 
 func main() {
-    py := pyrun.Python()
+    py := pyrun.NewPython()
     err := py.Execute(`
     def hello():
         return 'Hello, world!'

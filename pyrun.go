@@ -1,6 +1,6 @@
 package pyrun
 
-// #cgo pkg-config: python2
+// #cgo pkg-config: python-2.7
 // #include "pyrun.h"
 import "C"
 

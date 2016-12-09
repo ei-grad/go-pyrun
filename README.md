@@ -22,9 +22,9 @@ import "log"
 func main() {
     py := pyrun.NewPython()
     err := py.Execute(`
-    def hello():
-        return 'Hello, world!'
-    `)
+def hello():
+    return 'Hello, world!'
+`)
     if err != nil {
         log.Fatalf("Execute failed: %s", err)
     }

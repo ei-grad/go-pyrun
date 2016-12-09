@@ -35,7 +35,7 @@ type task struct {
 
 var tasks = make(chan *task)
 
-// Execute will a python code and return an error, if any.
+// Execute a Python code and return an error if any.
 func (py *Python) Execute(cmd string) error {
 	t := task{
 		kind:    taskFileInput,
@@ -53,8 +53,8 @@ func (py *Python) Execute(cmd string) error {
 	return nil
 }
 
-// EvalToString executes a single isolated Python expression and returns result
-// of its evaluation as string.
+// EvalToString evaluates a single Python expression and returns the result as
+// string.
 func (py *Python) EvalToString(cmd string) (string, error) {
 	t := task{
 		kind:    taskEvalInput,

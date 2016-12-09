@@ -19,17 +19,6 @@ type Python struct {
 	ctx *C.PyObject
 }
 
-// NewPython creates new context and ensures that the Python interpreter is
-// initialized.
-func NewPython() *Python {
-	once.Do(Initialize)
-	ret := Python{ctx: C.GoPyRunGetContext()}
-	if ret.ctx == nil {
-		log.Fatal("Can't initialize Python!")
-	}
-	return &ret
-}
-
 type taskKind int
 
 const (
@@ -45,7 +34,6 @@ type task struct {
 }
 
 var tasks = make(chan *task)
-var once sync.Once
 
 // Execute will a python code and return an error, if any.
 func (py *Python) Execute(cmd string) error {
@@ -84,14 +72,35 @@ func (py *Python) EvalToString(cmd string) (string, error) {
 	return C.GoString(C.PyString_AsString(obj)), nil
 }
 
-// Initialize a python interpreter, it is called automaticaly with sync.Once
-// when needed.
+var shutdown chan struct{}
+var shutdownDone chan struct{}
+var initializeMutex sync.Mutex
+
+// Initialize a Python interpreter. It is called automaticaly during
+// NewPython() call if needed. It does nothing if interpreter is already
+// initialized.
 func Initialize() {
+
+	initializeMutex.Lock()
+	defer initializeMutex.Unlock()
+
+	if shutdown != nil {
+		return
+	}
+
+	shutdown = make(chan struct{})
+	shutdownDone = make(chan struct{})
+
 	ready := make(chan struct{})
 	defer close(ready)
+
 	go func() {
 		runtime.LockOSThread()
 		C.Py_Initialize()
+		defer func() {
+			C.Py_Finalize()
+			close(shutdownDone)
+		}()
 		ready <- struct{}{}
 	loop:
 		for {
@@ -109,22 +118,47 @@ func Initialize() {
 				break loop
 			}
 		}
-		C.Py_Finalize()
-		shutdownDone <- struct{}{}
 	}()
 	<-ready
 }
 
-var shutdown = make(chan struct{})
-var shutdownDone = make(chan struct{})
+var once sync.Once
+
 var shutdownMutex sync.Mutex
 
-// Finalize a python interpreter.
+// NewPython creates new context and ensures that the Python interpreter is
+// initialized.
+func NewPython() *Python {
+	once.Do(Initialize)
+	ret := Python{ctx: C.GoPyRunGetContext()}
+	if ret.ctx == nil {
+		log.Fatal("Can't initialize Python!")
+	}
+	return &ret
+}
+
+// Finalize a python interpreter. If interpreter is not running it does nothing.
+// Should be called when there is no need to execute a Python code anymore.
 func Finalize() {
+
+	// don't allow several Finalize calls to control the shutdown/shutdownDone channels
 	shutdownMutex.Lock()
 	defer shutdownMutex.Unlock()
+
+	// if no interpreter is running, do nothing
+	if shutdown == nil {
+		return
+	}
+
+	// notify a worker goroutine from Initialize that it should finish its task
+	// and break the loop
 	close(shutdown)
+
+	// wait for it to finish
 	<-shutdownDone
-	shutdown = make(chan struct{})
+
+	// reinitialize
+	shutdown = nil
+	shutdownDone = nil
 	once = sync.Once{}
 }

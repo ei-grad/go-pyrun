@@ -17,4 +17,5 @@ func TestHelloWorld(t *testing.T) {
 	if ret != "Hello, world!" {
 		t.Fatalf("Get unexpected result: %s", ret)
 	}
+	Finalize()
 }

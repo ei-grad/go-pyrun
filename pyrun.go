@@ -1,3 +1,16 @@
+/*
+
+Package pyrun allows to run Python code and get result from it.
+
+How to use:
+
+1. Create a new context with `ctx := pyrun.NewPython()`
+
+2. Import modules and define helper functions with `ctx.Execute(...)`
+
+3. Evaluate expressions with `ctx.EvalToString(...)` to get result.
+
+*/
 package pyrun
 
 // #cgo pkg-config: python-2.7

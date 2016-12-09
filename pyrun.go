@@ -137,8 +137,9 @@ func NewPython() *Python {
 	return &ret
 }
 
-// Finalize a python interpreter. If interpreter is not running it does nothing.
-// Should be called when there is no need to execute a Python code anymore.
+// Finalize a python interpreter. It does nothing if the interpreter is not
+// running. Should be called when there is no need to execute a Python code
+// anymore.
 func Finalize() {
 
 	// don't allow several Finalize calls to control the shutdown/shutdownDone channels

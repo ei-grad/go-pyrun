@@ -19,7 +19,7 @@ PyObject *GoPyRunFileInput(PyObject *ctx, const char *command) {
     }
     if (Py_FlushLine())
         PyErr_Print();
-	return v;
+    return v;
 }
 
 PyObject* GoPyRunEvalInput(PyObject *ctx, const char *command) {

@@ -1,13 +1,14 @@
 Go PyRun - simple interactation with Python
 ===========================================
 
-It runs a Python interpreter in dedicated thread, and allows to run Python code
-and get result from it.
+It runs a Python interpreter in single dedicated thread and allows to get
+result of Python code evaluation in Golang.
 
 Install
 -------
 
-You would need python-2.7 headers to build and install go-pyrun. On Ubuntu just install the python2.7-dev package:
+You would need python-2.7 headers to build and install go-pyrun. On Ubuntu just
+install the python2.7-dev package:
 
     apt-get install python2.7-dev
 

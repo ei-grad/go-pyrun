@@ -44,3 +44,12 @@ def hello():
     fmt.Printf("Hello from Python: %s\n", ret)
 }
 ```
+
+Contributing
+------------
+
+Feel free to open issues and send pull requests implementing new useful methods.
+
+But it shouldn't be more than a something between a joke and a ducktape for emeregency cases and experimenting.
+
+Look also to @bradfitz's similar module for perl: https://github.com/bradfitz/campher.
